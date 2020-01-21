@@ -16,10 +16,7 @@ In addition, a file needs to be adjusted before the utilities are compiled:
     cd utils/guess_utilities_1.3/gmap/libproj4/misc/
     vim PJ_ob_tran.c
 
-Change line 45
-    // change by Martin to compile, 20/01/2020
-    if (xy.x != HUGE_VAL && P->rot) {
-    //if (xy.x != HUGE && P->rot) {
+
 
 3. Compile utilities (ask Martin but n.e.v.e.r. touch again)
     make 
