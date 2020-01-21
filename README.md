@@ -10,7 +10,7 @@ On gadi, LPJ-GUESS doesn't find a necessary library
 
 NETCDF_CXX_LIBRARY               NETCDF_CXX_LIBRARY-NOTFOUND
 
-- this has to be edited by hand, i.e. change NETCDF_CXX_LIBRARY-NOTFOUND to libnetcdf_c++4.so
+This has to be edited by hand, i.e. change NETCDF_CXX_LIBRARY-NOTFOUND to libnetcdf_c++4.so
 In addition, a file needs to be adjusted before the utilities are compiled:
 
 cd utils/guess_utilities_1.3/gmap/libproj4/misc/
