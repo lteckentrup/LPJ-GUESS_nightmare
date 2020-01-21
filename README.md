@@ -21,9 +21,8 @@ Change line 45
     if (xy.x != HUGE_VAL && P->rot) {
     //if (xy.x != HUGE && P->rot) {
 
-3. Compile utilities
+3. Compile utilities (ask Martin but n.e.v.e.r. touch again)
     make 
-[ask Martin but n.e.v.e.r. touch again]
 
 4. Start run
     cd ../../runs/global_annual_CRUNCEP/
