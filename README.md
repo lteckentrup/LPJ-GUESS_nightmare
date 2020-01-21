@@ -25,7 +25,7 @@ if (xy.x != HUGE_VAL && P->rot) {
 make [ask Martin but n.e.v.e.r. touch again]
 
 4. Start run
-'cd ../../runs/global_annual_CRUNCEP/
+'cd ../../runs/global_annual_CRUNCEP/'
 ./clean_up.sh
 ./initial_setup.sh
-./submit_to_raijin.sh'
+./submit_to_raijin.sh
