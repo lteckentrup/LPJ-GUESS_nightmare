@@ -1,6 +1,9 @@
 import pandas as pd
 import xarray
+import os
 
+pathwayIN= ''
+pathwayOUT = ''
 def convert_ascii_netcdf(var, time_res):
     
     # Import Data
@@ -40,7 +43,7 @@ def convert_ascii_netcdf(var, time_res):
             pass
     else:
         pass
-    df = pd.read_csv(var+'.out',header=0,error_bad_lines=False, 
+    df = pd.read_csv(pathway_IN+var+'.out',header=0,error_bad_lines=False, 
                      names=colnames,delim_whitespace=True)
     
     df2 = df.rename(columns={'Year': 'Time'})
