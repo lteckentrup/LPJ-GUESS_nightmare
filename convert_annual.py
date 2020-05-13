@@ -1,6 +1,5 @@
 import pandas as pd
 import xarray
-import os
 
 def convert_ascii_netcdf(var, time_res):
     
@@ -81,6 +80,24 @@ def convert_ascii_netcdf(var, time_res):
                               'long_name':'Tropical Broadleaved Raingreen tree'}
             xr['C3G'].attrs={'units':'kgC/m2/year', 'long_name':'(cool) C3 Grass'}
             xr['C4G'].attrs={'units':'kgC/m2/year', 'long_name':'(warm) C4 Grass'}
+            
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc', encoding={'Time':{'dtype': 'double'},
+                                              'Lat':{'dtype': 'double'}, 
+                                              'Lon':{'dtype': 'double'}, 
+                                              'Total':{'dtype': 'float32'},
+                                              'BNE':{'dtype': 'float32'},
+                                              'BINE':{'dtype': 'float32'},
+                                              'BNS':{'dtype': 'float32'},
+                                              'TeNE':{'dtype': 'float32'},
+                                              'TeBS':{'dtype': 'float32'},
+                                              'IBS':{'dtype': 'float32'},
+                                              'TeBE':{'dtype': 'float32'},
+                                              'TrBE':{'dtype': 'float32'},
+                                              'TrIBE':{'dtype': 'float32'},
+                                              'TrBR':{'dtype': 'float32'},
+                                              'C3G':{'dtype': 'float32'},
+                                              'C4G':{'dtype': 'float32'}})
         elif var in ('cflux'):
             xr['Veg'].attrs={'units':'kgC/m2/year', 
                               'long_name':'Vegetation NPP'}
@@ -93,6 +110,17 @@ def convert_ascii_netcdf(var, time_res):
             xr['Est'].attrs={'units':'kgC/m2/year', 
                              'long_name':'Biomass of plants establishing in the current year'}
             xr['NEE'].attrs={'units':'kgC/m2/year', 'long_name':'Net C flux (sum of other fluxes'}
+            
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc', encoding={'Time':{'dtype': 'double'},
+                                              'Lat':{'dtype': 'double'}, 
+                                              'Lon':{'dtype': 'double'}, 
+                                              'Veg':{'dtype': 'float32'},
+                                              'Repr':{'dtype': 'float32'},
+                                              'Soil':{'dtype': 'float32'},
+                                              'Fire':{'dtype': 'float32'},
+                                              'Est':{'dtype': 'float32'},
+                                              'NEE':{'dtype': 'float32'}})
         elif var == 'cpool':
             xr['VegC'].attrs={'units':'kgC/m2', 
                               'long_name':'Vegetation carbon pool'}
@@ -102,9 +130,25 @@ def convert_ascii_netcdf(var, time_res):
                               'long_name':'Soil carbon pool'}
             xr['Total'].attrs={'units':'kgC/m2', 
                               'long_name':'Total carbon pool'}
+
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc', 
+                         encoding={'Time':{'dtype': 'double'},
+                                   'Lat':{'dtype': 'double'},
+                                   'Lon':{'dtype': 'double'},
+                                   'VegC':{'dtype': 'float32'},
+                                   'LitterC':{'dtype': 'float32'},
+                                   'SoilC':{'dtype': 'float32'},
+                                   'Total':{'dtype': 'float32'}})
         elif var == 'doc':
             xr['Total'].attrs={'units':'kgC/m2r', 
                               'long_name':'Total dissolved organic carbon'}
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc', 
+                         encoding={'Time':{'dtype': 'double'},
+                                   'Lat':{'dtype': 'double'},
+                                   'Lon':{'dtype': 'double'},
+                                   'Total':{'dtype': 'float32'}})
         elif var == 'nflux':
             xr['dep'].attrs={'units':'kgN/ha', 
                               'long_name':'Deposition'}
@@ -118,9 +162,48 @@ def convert_ascii_netcdf(var, time_res):
                               'long_name':'leaching'}            
             xr['NEE'].attrs={'units':'kgN/ha', 
                               'long_name':'Net N flux (sum of other fluxes)'}
+
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc', 
+                         encoding={'Time':{'dtype': 'double'},
+                                   'Lat':{'dtype': 'double'},
+                                   'Lon':{'dtype': 'double'},
+                                   'dep':{'dtype': 'float32'},
+                                   'fix':{'dtype': 'float32'},
+                                   'fert':{'dtype': 'float32'},
+                                   'flux':{'dtype': 'float32'},
+                                   'leach':{'dtype': 'float32'},
+                                   'NEE':{'dtype': 'float32'}})
+            
+            
         elif var == 'ngases':
             colnames = ['Lon',  'Lat', 'Year', 'NH3', 'NOx', 'N2O', 'N2', 
                         'NSoil', 'Total']
+            xr['NH3'].attrs={'units':'kgN/ha/year', 
+                              'long_name':'NH3 flux to atmosphere from fire'}
+            xr['NOx'].attrs={'units':'kgN/ha/year', 
+                               'long_name':'NOx flux to atmosphere from fire'}
+            xr['N2O'].attrs={'units':'kgN/ha/year', 
+                              'long_name':'N2O flux to atmosphere from fire'}
+            xr['N2'].attrs={'units':'kgN/ha', 
+                              'long_name':'N2O flux to atmosphere from fire'}
+            xr['NSoil'].attrs={'units':'kgN/ha', 
+                              'long_name':'??'}            
+            xr['Total'].attrs={'units':'kgN/ha', 
+                              'long_name':'Total'}
+
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc',
+                         encoding={'Time':{'dtype': 'double'},
+                                   'Lat':{'dtype': 'double'}, 
+                                   'Lon':{'dtype': 'double'}, 
+                                   'NH3':{'dtype': 'float32'},
+                                   'NOx':{'dtype': 'float32'},
+                                   'N2O':{'dtype': 'float32'},
+                                   'N2':{'dtype': 'float32'},
+                                   'NSoil':{'dtype': 'float32'},
+                                   'Total':{'dtype': 'float32'}})            
+            
         elif var == 'npool':
             xr['VegN'].attrs={'units':'kgN/m2', 
                               'long_name':'Vegetation nitrogen pool'}
@@ -130,6 +213,17 @@ def convert_ascii_netcdf(var, time_res):
                               'long_name':'Soil nitrogen pool'}
             xr['Total'].attrs={'units':'kgN/m2', 
                               'long_name':'Total nitrogen pool'}
+
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc', 
+                         encoding={'Time':{'dtype': 'double'},
+                                   'Lat':{'dtype': 'double'}, 
+                                   'Lon':{'dtype': 'double'},
+                                   'VegN':{'dtype': 'float32'},
+                                   'LitterN':{'dtype': 'float32'},
+                                   'SoilN':{'dtype': 'float32'},
+                                   'Total':{'dtype': 'float32'}})
+            
         elif var == 'nsources':
             xr['dep'].attrs={'units':'gN/ha', 
                               'long_name':'Deposition'}
@@ -147,6 +241,21 @@ def convert_ascii_netcdf(var, time_res):
                               'long_name':'??'} 
             xr['Total'].attrs={'units':'gN/ha', 
                               'long_name':'Total'}
+
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc', 
+                         encoding={'Time':{'dtype': 'double'},
+                                   'Lat':{'dtype': 'double'}, 
+                                   'Lon':{'dtype': 'double'}, 
+                                   'dep':{'dtype': 'float32'},
+                                   'fix':{'dtype': 'float32'},
+                                   'fert':{'dtype': 'float32'},
+                                   'input':{'dtype': 'float32'},
+                                   'min':{'dtype': 'float32'},
+                                   'imm':{'dtype': 'float32'},
+                                   'netmin':{'dtype': 'float32'},
+                                   'Total':{'dtype': 'float32'}}) 
+            
         elif var == 'tot_runoff':
             colnames = ['Lon', 'Lat', 'Year', 'Surf', 'Drain', 'Base', 'Total']
             xr['Surf'].attrs={'units':'mm/year', 
@@ -157,6 +266,16 @@ def convert_ascii_netcdf(var, time_res):
                               'long_name':'??'}
             xr['Total'].attrs={'units':'mm/year', 
                               'long_name':'??'}
+
+            # save to netCDF
+            xr.to_netcdf(pathway_OUT+var+'_LPJ-GUESS_1901-2015.nc',
+                         encoding={'Time':{'dtype': 'double'},
+                                   'Lat':{'dtype': 'double'}, 
+                                   'Lon':{'dtype': 'double'}, 
+                                   'Surf':{'dtype': 'float32'},
+                                   'Drain':{'dtype': 'float32'},
+                                   'Base':{'dtype': 'float32'},
+                                   'Total':{'dtype': 'float32'}})
         else:
             pass
             
@@ -165,21 +284,4 @@ def convert_ascii_netcdf(var, time_res):
     # add global attribute metadata
     # xr.attrs={'Conventions':'CF-1.6', 'title':'Data', 'summary':'Data generated'}
     
-    # save to netCDF
-    xr.to_netcdf('test.nc', encoding={'Time':{'dtype': 'double'},
-                                      'Lat':{'dtype': 'double'}, 
-                                      'Lon':{'dtype': 'double'}, 
-                                      'Total':{'dtype': 'float32'},
-                                      'BNE':{'dtype': 'float32'},
-                                      'BINE':{'dtype': 'float32'},
-                                      'BNS':{'dtype': 'float32'},
-                                      'TeNE':{'dtype': 'float32'},
-                                      'TeBS':{'dtype': 'float32'},
-                                      'IBS':{'dtype': 'float32'},
-                                      'TeBE':{'dtype': 'float32'},
-                                      'TrBE':{'dtype': 'float32'},
-                                      'TrIBE':{'dtype': 'float32'},
-                                      'TrBR':{'dtype': 'float32'},
-                                      'C3G':{'dtype': 'float32'},
-                                      'C4G':{'dtype': 'float32'}})
-convert_ascii_netcdf('agpp')
+convert_ascii_netcdf('agpp', 'annual')
