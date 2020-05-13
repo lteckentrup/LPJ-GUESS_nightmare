@@ -286,5 +286,6 @@ def convert_ascii_netcdf(var, time_res):
     
     # add global attribute metadata
     # xr.attrs={'Conventions':'CF-1.6', 'title':'Data', 'summary':'Data generated'}
-    
+
+## For example convert annual GPP
 convert_ascii_netcdf('agpp', 'annual')
