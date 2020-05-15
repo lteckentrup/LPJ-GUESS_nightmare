@@ -25,7 +25,7 @@ for i,lat in enumerate(lats):
             vals = vals.reshape(nyears*nmonths)
             out[i,j,:] = vals
 
-t1 = pd.to_datetime('1/1/1990')
+t1 = pd.to_datetime('1/1/1901')
 time = t1 + pd.to_timedelta(np.arange(nmonths*nyears), 'M')
 
 ds = xr.Dataset(data_vars={"mgpp":(["y", "x", "time"],out)},
