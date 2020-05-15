@@ -45,14 +45,21 @@ def convert_ascii_netcdf(var, time_res):
         pass
     df = pd.read_csv('agpp.out',header=0,error_bad_lines=False, 
                      names=colnames,delim_whitespace=True)
-    
-    df2 = df.rename(columns={'Year': 'Time'})
-    df_time = pd.date_range('1901-01-01', periods=115, freq='Y')
-    
+
+    ## 2. Versuch (1. Versuch komplett kommentieren)
+    ## df_time = pd.date_range('1901-01-01', periods=115, freq='Y')
+    ## time = df_time.to_numpy()
+    ## df['Time'] = np.tile(time, 58961)
+    ## df.drop(['Year'], axis=1)
+       
+    ## 1. Versuch:
+    df2 = df.rename(columns={'Year': 'Time'}) 
+    df2.Time = pd.to_datetime(df2.Time, format = '%Y')  
     
     print(df2)
     print(df2.set_index(['Time', 'Lat', 'Lon']))
     xr = df2.set_index(['Time', 'Lat', 'Lon']).to_xarray()
+    xr.Time.encoding['units'] = "Seconds since 1901-01-01 00:00:00"
     
     # add metadata
     if time_res == 'monthly':
