@@ -2,18 +2,23 @@ import pandas as pd
 import xarray as xr
 import os
 import numpy as np
+from datetime import date
 
-pathway= ''
+## Define pathway
+pathway=''
+
+date_created = date.today()
 
 def convert_ascii_netcdf(var, time_res, experiment, setup):
     
     df = pd.read_csv(pathway+var+'.out',header=0,error_bad_lines=False, 
                      delim_whitespace=True)
     
-    nyears = len(df)/58961
+    years = np.unique(df.Year)
+    nyears = len(years)
     first_year = '1901'
-    last_year = str(int(1901+nyears-1))
-
+    last_year = str(int(years[-1]))
+    print(last_year)
     df2 = df.rename(columns={'Year': 'Time'})
     df2.Time = pd.to_datetime(df2.Time, format = '%Y')
 
@@ -31,12 +36,12 @@ def convert_ascii_netcdf(var, time_res, experiment, setup):
         ds.attrs={'Conventions':'CF-1.6', 
                   'Model':'LPJ-GUESS version 4.0.1.',
                   'Set-up': 'Stochastic and fire disturbance not active',
-                  'Title':experiment, 'Date_Created':'May 2020'}
+                  'Title':experiment, 'Date_Created':str(date_created)}
     else:
         ds.attrs={'Conventions':'CF-1.6', 
                   'Model':'LPJ-GUESS version 4.0.1.',
                   'Set-up': 'Stochastic and fire disturbance active',
-                  'Title':experiment, 'Date_Created':'May 2020'}
+                  'Title':experiment, 'Date_Created':str(date_created)}
     
     fileOUT = pathway+var+'_LPJ-GUESS_'+first_year+'-'+last_year+'.nc'
     
