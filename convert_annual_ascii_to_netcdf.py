@@ -51,21 +51,25 @@ def convert_ascii_netcdf(var, time_res, experiment, setup):
         ds['BNE'].attrs={'units':'kgC/m2/year',
                          'long_name':'Boreal Needleleaved Evergreen tree'}
         ds['BINE'].attrs={'units':'kgC/m2/year',
-                          'long_name':'Boreal Needleleaved Evergreen shade-Intolerant tree'}
+                          'long_name':'Boreal Needleleaved Evergreen '
+                          'shade-Intolerant tree'}
         ds['BNS'].attrs={'units':'kgC/m2/year', 
                          'long_name':'Boreal Needleleaved Summergreen tree'}
         ds['TeNE'].attrs={'units':'kgC/m2/year',
                           'long_name':'Temperate Needleleaved Evergreen tree'}
         ds['TeBS'].attrs={'units':'kgC/m2/year',
-                          'long_name':'Temperate (shade-tolerant) Broadleaved Summergreen tree'}
+                          'long_name':'Temperate (shade-tolerant) Broadleaved '
+                          'Summergreen tree'}
         ds['IBS'].attrs={'units':'kgC/m2/year',
-                         'long_name':'boreal/ temperate shade-Intolerant Broadleaved Summergreen tree'}
+                         'long_name':'boreal/ temperate shade-Intolerant '
+                         'Broadleaved Summergreen tree'}
         ds['TeBE'].attrs={'units':'kgC/m2/year',
                           'long_name':'Temperate Broadleaved Evergreen tree'}
         ds['TrBE'].attrs={'units':'kgC/m2/year',
                           'long_name':'Tropical Broadleaved Evergreen tree'}
         ds['TrIBE'].attrs={'units':'kgC/m2/year',
-                           'long_name':'Tropical Broadleaved Evergreen shade-Intolerant tree'}
+                           'long_name':'Tropical Broadleaved Evergreen '
+                           'shade-Intolerant tree'}
         ds['TrBR'].attrs={'units':'kgC/m2/year',
                           'long_name':'Tropical Broadleaved Raingreen tree'}
         ds['C3G'].attrs={'units':'kgC/m2/year', 'long_name':'(cool) C3 Grass'}
@@ -94,14 +98,17 @@ def convert_ascii_netcdf(var, time_res, experiment, setup):
         ds['Veg'].attrs={'units':'kgC/m2/year',
                          'long_name':'Vegetation NPP'}
         ds['Repr'].attrs={'units':'kgC/m2/year',
-                          'long_name':'Respired litter derived from plant allocation to reproduction'}
+                          'long_name':'Respired litter derived from plant '
+                          'allocation to reproduction'}
         ds['Soil'].attrs={'units':'kgC/m2/year',
                           'long_name':'Soil heterotrophic respiration'}
         ds['Fire'].attrs={'units':'kgC/m2/year',
                           'long_name':'Wildfire emissions'}
         ds['Est'].attrs={'units':'kgC/m2/year',
-                         'long_name':'Biomass of plants establishing in the current year'}
-        ds['NEE'].attrs={'units':'kgC/m2/year', 'long_name':'Net C flux (sum of other fluxes'}
+                         'long_name':'Biomass of plants establishing in the '
+                         'current year'}
+        ds['NEE'].attrs={'units':'kgC/m2/year', 'long_name':'Net C flux '
+                         '(sum of other fluxes'}
         
         # save to netCDF
         ds.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
