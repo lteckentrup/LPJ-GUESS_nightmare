@@ -24,17 +24,20 @@ In addition, a file needs to be adjusted before the utilities are compiled:
     vim PJ_ob_tran.c
 
 Change line 45
+```
     // change by Martin to compile, 20/01/2020
     if (xy.x != HUGE_VAL && P->rot) {
     //if (xy.x != HUGE && P->rot) {
-
+```
 3. Compile utilities (ask Martin but n.e.v.e.r. touch again)
+```
     make 
-
+```
 4. Start run
+```
     cd ../../runs/global_annual_CRUNCEP/
     ./clean_up.sh
     ./initial_setup.sh
     ./submit_to_raijin.sh
-
-LPJ-GUESS produces ASCII output for landpoints only, convert_annual_ascii_to_netcdf.py and  	convert_annual_ascii_to_netcdf_only.py
+```
+LPJ-GUESS produces ASCII output for landpoints only, convert_annual_ascii_to_netcdf_only_landpoints.py converts all land points that are in the annual output to netCDF (278x701 grid points); convert_annual_ascii_to_netcdf.py fills the gaps, i.e. the ocean points, with NaN and converts the annual output to netCDF (320x720 grid points).
