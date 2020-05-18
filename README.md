@@ -36,3 +36,5 @@ Change line 45
     ./clean_up.sh
     ./initial_setup.sh
     ./submit_to_raijin.sh
+
+LPJ-GUESS produces ASCII output for landpoints only, 
