@@ -37,4 +37,4 @@ Change line 45
     ./initial_setup.sh
     ./submit_to_raijin.sh
 
-LPJ-GUESS produces ASCII output for landpoints only, 
+LPJ-GUESS produces ASCII output for landpoints only, convert_annual_ascii_to_netcdf.py and  	convert_annual_ascii_to_netcdf_only.py
