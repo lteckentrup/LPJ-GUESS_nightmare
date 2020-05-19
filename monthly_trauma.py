@@ -33,16 +33,18 @@ Lat = xr.DataArray(np.arange(-90.+dy/2., 90., dy), dims=("Lat"),
                    attrs={"long_name":"latitude", "unit":"degrees_north"})
 nlat = Lat.size
 
-out = xr.DataArray(np.zeros((nlat, nlon, nyears*nmonths)),
-                   dims=("Lat","Lon","Time"),
-                   coords=({"Lat":Lat, "Lon":Lon, "Time":time}))
+out = xr.DataArray(np.zeros((nyears*nmonths, nlat, nlon)),
+                   dims=("Time","Lat","Lon"),
+                   coords=({"Time":time, "Lat":Lat, "Lon":Lon}))
 out[:] = np.nan
-
 row = next(df.iterrows())[1]
+print(row)
+print(row[3:])
+
 out.loc[dict(
-        Lon=out.Lon[(out.Lon==row["Lon"])],
+        Time=out.Time[(out.Time.dt.year==row["Year"])],
         Lat=out.Lat[(out.Lat==row["Lat"])],
-        Time=out.Time[(out.Time.dt.year==row["Year"])])] = row[3:]
+        Lon=out.Lon[(out.Lon==row["Lon"])])] = row[3:].to_numpy().reshape(12,1,1)
 
 df_stack = df[months].stack()
 
@@ -51,24 +53,26 @@ rows = df[0:nyears]
 # stack only the rows for the point here.
 #rows_stack = rows[months].stack()
 out.loc[dict(
-        Lon=out.Lon[(out.Lon==rows["Lon"].min())],
-        Lat=out.Lat[(out.Lat==rows["Lat"].min())])] = df_stack[0:nyears*nmonths]
-out.sel(Lon=rows["Lon"].min(),Lat=rows["Lat"].min())
+        Lat=out.Lat[(out.Lat==rows["Lat"].min())],
+        Lon=out.Lon[(out.Lon==rows["Lon"].min())])] = df_stack[0:nyears*nmonths].to_numpy().reshape(1380,1,1)
+out.sel(Lat=rows["Lat"].min(),Lon=rows["Lon"].min())
 
-#df_stack = df[months].stack()
 for nr in range(0,len(df.index),nyears):
     print(nr)
     rows = df[nr:nr+nyears]
-    thislon = rows["Lon"].min()
     thislat = rows["Lat"].min()
+    thislon = rows["Lon"].min()
     out.loc[dict(
-            Lon=out.Lon[(out.Lon==thislon)],
-            Lat=out.Lat[(out.Lat==thislat)])] = df_stack[nr*nmonths:(nr+nyears)*nmonths]
+            Lat=out.Lat[(out.Lat==thislat)],
+            Lon=out.Lon[(out.Lon==thislon)])] = df_stack[nr*nmonths:(nr+nyears)*nmonths]
 
 out.Time.encoding['units'] = 'Seconds since 1901-01-01 00:00:00'
 out.Time.encoding['long_name'] = 'Time'
 out.Time.encoding['calendar'] = '365_day'
 
-out.to_netcdf('out.nc', encoding={'Time':{'dtype': 'double'},
-                                  'Lat':{'dtype': 'double'},
-                                  'Lon':{'dtype': 'double'}})
+ds = out.to_dataset(name='mgpp')
+
+ds.to_netcdf('out.nc', encoding={'Time':{'dtype': 'double'},
+                                 'Lat':{'dtype': 'double'},
+                                 'Lon':{'dtype': 'double'},
+                                 'mgpp':{'dtype': 'float32'}})
