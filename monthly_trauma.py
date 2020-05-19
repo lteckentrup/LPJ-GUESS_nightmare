@@ -1,60 +1,77 @@
 import pandas as pd
-import xarray
-import os
-import datetime
 import numpy as np
+import xarray as xr
 
-## Import Data
-colnames = ['Lon', 'Lat', 'Year', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-monthnames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 
-              'Oct', 'Nov', 'Dec']
+fname = "global_CRUNCEP/mgpp.out"
+df = pd.read_csv(fname, header=0, delim_whitespace=True)
 
-df = pd.read_csv('../global_CRUNCEP_nonoise/mgpp.out', header=0,
-                  error_bad_lines=False, names=colnames, delim_whitespace=True)
+months=list(df.columns)
+months=months[3:]
 
-df_stack = df[['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 
-              'Oct', 'Nov', 'Dec']].stack()
+lons = np.unique(df.Lon)
+lats = np.unique(df.Lat)
+years = np.unique(df.Year)
+nyears = len(years)
+nrows = len(lats)
+ncols = len(lons)
+nmonths = 12
+lons.sort()
+lats.sort()
+years.sort()
 
-# df_time = pd.date_range('1901-01-01', periods=1380, freq='M')
+# Create the axes
+time = pd.date_range(start=f'01/{years[0]}',
+                     end=f'01/{years[-1]+1}', freq='M')
+# We'll use a generic way to create a regular grid from [-180,180] and
+# [-90, 90] when knowing the resolution. Feel free to reuse as needed.
+dx = 0.5
+Lon = xr.DataArray(np.arange(-180.+dx/2., 180., dx), dims=("Lon"),
+                   attrs={"long_name":"longitude", "unit":"degrees_east"})
+nlon = Lon.size
+dy = 0.5
+Lat = xr.DataArray(np.arange(-90.+dy/2., 90., dy), dims=("Lat"),
+                   attrs={"long_name":"latitude", "unit":"degrees_north"})
+nlat = Lat.size
 
-# Rearrange so all var values are in one column
-mgpp = df_stack.to_numpy()
-lon = df['Lon'].to_numpy()
-lat = df['Lat'].to_numpy()
+out = xr.DataArray(np.zeros((nlat, nlon, nyears*nmonths)),
+                   dims=("Lat","Lon","Time"),
+                   coords=({"Lat":Lat, "Lon":Lon, "Time":time}))
+out[:] = np.nan
 
-# time = df_time.to_numpy()
-# time = np.arange(1901,2016)
-# time = np.repeat(time, repeats = 12)
-print(len(np.repeat(lon, repeats = 12)))
-print(len(np.arange(0, 81366180)))
-# print(len(np.tile(time, 58961)))
+row = next(df.iterrows())[1]
+out.loc[dict(
+        Lon=out.Lon[(out.Lon==row["Lon"])],
+        Lat=out.Lat[(out.Lat==row["Lat"])],
+        Time=out.Time[(out.Time.dt.year==row["Year"])])] = row[3:]
 
-# Write into new dataframe
-df_sorted = pd.DataFrame()
-df_sorted['Lon'] = np.repeat(lon, repeats = 12)
-df_sorted['Lat'] = np.repeat(lat, repeats = 12)
-# df_sorted['Time'] = np.tile(time, int(len(np.repeat(lon, repeats = 12)/1380)))
-# df_sorted['Time'] = np.tile(time, 58961)
-df_sorted['Time'] = np.arange(0, 81366180)
-df_sorted['mgpp'] = mgpp
+df_stack = df[months].stack()
 
-print(df_sorted.head)
-print(df_sorted.tail)
+rows = df[0:nyears]
+# If we had missing years, we could add the missing years rows and then
+# stack only the rows for the point here.
+#rows_stack = rows[months].stack()
+out.loc[dict(
+        Lon=out.Lon[(out.Lon==rows["Lon"].min())],
+        Lat=out.Lat[(out.Lat==rows["Lat"].min())])] = df_stack[0:nyears*nmonths]
+out.sel(Lon=rows["Lon"].min(),Lat=rows["Lat"].min())
 
-print(df_sorted.set_index(['Time', 'Lat', 'Lon']))
-xr = df_sorted.set_index(['Time', 'Lat', 'Lon']).to_xarray()
+#df_stack = df[months].stack()
+for nr in range(0,len(df.index),nyears):
+    print(nr)
+    rows = df[nr:nr+nyears]
+    thislon = rows["Lon"].min()
+    thislat = rows["Lat"].min()
+    out.loc[dict(
+            Lon=out.Lon[(out.Lon==thislon)],
+            Lat=out.Lat[(out.Lat==thislat)])] = df_stack[nr*nmonths:(nr+nyears)*nmonths]
 
-# add metadata
-xr['Lat'].attrs={'units':'degrees', 'long_name':'Latitude'}
-xr['Lon'].attrs={'units':'degrees', 'long_name':'Longitude'}
-xr['mgpp'].attrs={'units':'kgC/m2/month', 'long_name':'Monthly GPP'}
+out.Time.encoding['units'] = 'Seconds since 1901-01-01 00:00:00'
+out.Time.encoding['long_name'] = 'Time'
+out.Time.encoding['calendar'] = '365_day'
 
-# add global attribute metadata
-# xr.attrs={'Conventions':'CF-1.6', 'title':'Data', 'summary':'Data generated'}
+out['Lat'].attrs={'units':'degrees', 'long_name':'Latitude'}
+out['Lon'].attrs={'units':'degrees', 'long_name':'Longitude'}
 
-# save to netCDF
-xr.to_netcdf('test.nc', encoding={'Time':{'dtype': 'double'},
-                                  'Lat':{'dtype': 'double'}, 
-                                  'Lon':{'dtype': 'double'}, 
-                                  'mgpp':{'dtype': 'float32'}})
+out.to_netcdf('out.nc', encoding={'Time':{'dtype': 'double'},
+                                  'Lat':{'dtype': 'double'},
+                                  'Lon':{'dtype': 'double'}})
