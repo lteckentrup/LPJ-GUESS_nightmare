@@ -69,9 +69,6 @@ out.Time.encoding['units'] = 'Seconds since 1901-01-01 00:00:00'
 out.Time.encoding['long_name'] = 'Time'
 out.Time.encoding['calendar'] = '365_day'
 
-out['Lat'].attrs={'units':'degrees', 'long_name':'Latitude'}
-out['Lon'].attrs={'units':'degrees', 'long_name':'Longitude'}
-
 out.to_netcdf('out.nc', encoding={'Time':{'dtype': 'double'},
                                   'Lat':{'dtype': 'double'},
                                   'Lon':{'dtype': 'double'}})
