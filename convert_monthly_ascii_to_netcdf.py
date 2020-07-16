@@ -3,18 +3,8 @@ import numpy as np
 import xarray as xr
 from datetime import date
 
-pathway= 'global_CRUNCEP/'
-# pathway= 'global_CRUNCEP_only_CP_anomaly_npatch_100/'
-# pathway= 'global_CRUNCEP_only_EP_anomaly_npatch_100/'
-# pathway= 'global_CRUNCEP_only_CP_nearest_year_npatch_100/'
-# pathway= 'global_CRUNCEP_only_EP_nearest_year_npatch_100/'
-# pathway='global_CRUNCEP_no_fire_no_dist_npatch_100/'
-# pathway='global_CRUNCEP_no_fire_no_dist_only_EP_anomaly_npatch_100/'
-# pathway='global_CRUNCEP_no_fire_no_dist_only_CP_anomaly_npatch_100/'
-# pathway='binary/'
-
 date_created = date.today()
-def convert_ascii_netcdf_monthly(var, time_res, experiment, setup):
+def convert_ascii_netcdf_monthly(pathway, var, time_res, experiment, setup):
     fname = pathway+var+'.out'
     df = pd.read_csv(fname, header=0, delim_whitespace=True)
 
@@ -67,7 +57,7 @@ def convert_ascii_netcdf_monthly(var, time_res, experiment, setup):
     out.Time.encoding['long_name'] = 'Time'
     out.Time.encoding['calendar'] = '365_day'
 
-    ds = out.to_dataset(name='mgpp')
+    ds = out.to_dataset(name=var)
 
     if setup == 'no_dist':
         ds.attrs={'Conventions':'CF-1.6',
@@ -135,4 +125,145 @@ def convert_ascii_netcdf_monthly(var, time_res, experiment, setup):
                                     'Lat':{'dtype': 'double'},
                                     'Lon':{'dtype': 'double'},
                                      var:{'dtype': 'float32'}})
-convert_ascii_netcdf_monthly('mgpp', 'monthly', 'LPJ-GUESS output CRUNCEP V7', '')
+
+### Control CRUNCEP
+convert_ascii_netcdf_monthly('global_CRUNCEP/', 'mgpp', 'monthly',
+                             'LPJ-GUESS output CRUNCEP V7', '')
+convert_ascii_netcdf_monthly('global_CRUNCEP/', 'mra', 'monthly',
+                             'LPJ-GUESS output CRUNCEP V7', '')
+convert_ascii_netcdf_monthly('global_CRUNCEP/', 'mrh', 'monthly',
+                             'LPJ-GUESS output CRUNCEP V7', '')
+
+### Control CRUNCEP without disturbance
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist/', 'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist/', 'mra',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist/', 'mrh',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7', 'no_dist')
+
+### CP only (anomaly) CRUNCEP without disturbance
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist_only_CP_anomaly/',
+                             'mgpp', 'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist_only_CP_anomaly/',
+                             'mra', 'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist_only_CP_anomaly/',
+                             'mrh', 'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+
+### EP only (anomaly) CRUNCEP without disturbance
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist_only_EP_anomaly/',
+                             'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist_only_EP_anomaly/',
+                             'mra',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_no_fire_no_dist_only_EP_anomaly/',
+                             'mrh',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+
+### CP only (anomaly) CRUNCEP
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_CP_anomaly/', 'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_CP_anomaly/', 'mra',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_CP_anomaly/', 'mrh',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+
+### CP only (nearest year) CRUNCEP
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_CP_nearest_year/', 'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(nearest year replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_CP_nearest_year/', 'mra',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(nearest year replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_CP_nearest_year/', 'mrh',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
+                             '(nearest year replacement)', 'no_dist')
+
+### EP only (anomaly) CRUNCEP
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_EP_anomaly/', 'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_EP_anomaly/', 'mra',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_EP_anomaly/', 'mrh',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(anomaly replacement)', 'no_dist')
+
+### EP only (nearest year) CRUNCEP
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_EP_nearest_year/', 'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(nearest year replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_EP_nearest_year/', 'mra',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(nearest year replacement)', 'no_dist')
+convert_ascii_netcdf_monthly('global_CRUNCEP_only_EP_nearest_year/', 'mrh',
+                             'monthly',
+                             'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
+                             '(nearest year replacement)', 'no_dist')
+
+### Control GSWP3
+convert_ascii_netcdf_monthly('global_GSWP3_noleap/', 'mgpp', 'monthly',
+                             'LPJ-GUESS output GSWP3 V2017', '')
+convert_ascii_netcdf_monthly('global_GSWP3_noleap/', 'mra', 'monthly',
+                             'LPJ-GUESS output GSWP3 V2017', '')
+convert_ascii_netcdf_monthly('global_GSWP3_noleap/', 'mrh', 'monthly',
+                             'LPJ-GUESS output GSWP3 V2017', '')
+
+### CP only (anomaly) GSWP3
+convert_ascii_netcdf_monthly('global_GSWP3_noleap_only_CP_anomaly/', 'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output GSWP3 V2017, only CP El Nino events '
+                             '(anomaly replacement)', '')
+convert_ascii_netcdf_monthly('global_GSWP3_noleap_only_CP_anomaly/', 'mra',
+                             'monthly',
+                             'LPJ-GUESS output GSWP3 V2017, only CP El Nino events '
+                             '(anomaly replacement)', '')
+convert_ascii_netcdf_monthly('global_GSWP3_noleap_only_CP_anomaly/', 'mrh',
+                             'monthly',
+                             'LPJ-GUESS output GSWP3 V2017, only CP El Nino events '
+                             '(anomaly replacement)', '')
+
+### EP only (anomaly) GSWP3
+convert_ascii_netcdf_monthly('global_GSWP3_noleap_only_EP_anomaly/', 'mgpp',
+                             'monthly',
+                             'LPJ-GUESS output GSWP3 V2017, only EP El Nino events '
+                             '(anomaly replacement)', '')
+convert_ascii_netcdf_monthly('global_GSWP3_noleap_only_EP_anomaly/', 'mra',
+                             'monthly',
+                             'LPJ-GUESS output GSWP3 V2017, only EP El Nino events '
+                             '(anomaly replacement)', '')
+convert_ascii_netcdf_monthly('global_GSWP3_noleap_only_EP_anomaly/', 'mrh',
+                             'monthly',
+                             'LPJ-GUESS output GSWP3 V2017, only EP El Nino events '
+                             '(anomaly replacement)', '')
