@@ -14,8 +14,9 @@ This has to be edited by hand, i.e. change NETCDF_CXX_LIBRARY-NOTFOUND to libnet
 1. press c
 2. press t
 3. press enter and change NETCDF_CXX_LIBRARY-NOTFOUND to /apps/netcdf/4.7.1/lib/libnetcdf_c++4.so
-4. press ender to confirm
+4. press enter to confirm
 5. press t to end writing
+6. press c 
 6. press g to generate
 
 In addition, a file needs to be adjusted before the utilities are compiled:
