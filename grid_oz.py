@@ -1,6 +1,6 @@
 import numpy as np
 
-we=open('gridlist_global_cf_ozcut.txt','w')
+we=open('gridlist_cf_oz.txt','w')
 lon = np.arange(112.25,154.25,0.5)
 lat = np.arange(10.25,44.25,0.5)*(-1)
 
