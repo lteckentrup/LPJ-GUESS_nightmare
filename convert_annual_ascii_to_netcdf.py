@@ -64,226 +64,125 @@ def convert_ascii_netcdf(pathway, var, time_res, experiment, setup):
 
     fileOUT = pathway+var+'_LPJ-GUESS_'+first_year+'-'+last_year+'.nc'
 
-    if var in ('aaet', 'agpp', 'clitter', 'cmass', 'cton_leaf', 'dens', 'npp',
-               'fpc', 'lai', 'nlitter', 'nmass', 'nuptake', 'vmaxnlim'):
+    dim = ['Time', 'Lat', 'Lon']
+    dim_dtype = ['double', 'double', 'double']
 
-        ds_fill['BNE'].attrs={'units':'kgC/m2/year',
-                              'long_name':'Boreal Needleleaved Evergreen tree'}
-        ds_fill['BINE'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Boreal Needleleaved Evergreen '
-                               'shade-Intolerant tree'}
-        ds_fill['BNS'].attrs={'units':'kgC/m2/year',
-                              'long_name':'Boreal Needleleaved '
-                              'Summergreen tree'}
-        ds_fill['TeNE'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Temperate Needleleaved '
-                               'Evergreen tree'}
-        ds_fill['TeBS'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Temperate (shade-tolerant) '
-                               'Broadleaved Summergreen tree'}
-        ds_fill['IBS'].attrs={'units':'kgC/m2/year',
-                              'long_name':'boreal/ temperate shade-Intolerant '
-                              'Broadleaved Summergreen tree'}
-        ds_fill['TeBE'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Temperate Broadleaved Evergreen '
-                               'tree'}
-        ds_fill['TrBE'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Tropical Broadleaved Evergreen '
-                               'tree'}
-        ds_fill['TrIBE'].attrs={'units':'kgC/m2/year',
-                                'long_name':'Tropical Broadleaved Evergreen '
-                                'shade-Intolerant tree'}
-        ds_fill['TrBR'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Tropical Broadleaved Raingreen '
-                               'tree'}
-        ds_fill['C3G'].attrs={'units':'kgC/m2/year',
-                              'long_name':'(cool) C3 Grass'}
-        ds_fill['C4G'].attrs={'units':'kgC/m2/year',
-                              'long_name':'(warm) C4 Grass'}
-        ds_fill['Total'].attrs={'units':'kgC/m2/year', 'long_name':'Total'}
+    if var in ('aaet', 'agpp', 'anpp', 'clitter', 'cmass', 'cton_leaf', 'dens',
+               'fpc', 'height', 'lai', 'nlitter', 'nmass', 'nuptake', 'vmaxnlim'):
+        if var == 'aaet':
+            unit='mm/year'
+        elif var in ('agpp', 'anpp'):
+            unit='kgC/m2/year'
+        elif var in ('clitter', 'cmass'):
+            unit='kgC/m2'
+        elif var == 'cton_leaf':
+            unit='ckgC/kgN'
+        elif var == 'dens':
+            unit='indiv/m2'
+        elif var in ('fpc', 'lai'):
+            unit='m2/m2'
+        elif var in ('nlitter', 'nmass'):
+            unit='kgN/m2'
+        elif var == 'nuptake':
+            unit='kgN/m2/year'
+        elif var == 'vmaxlim':
+             unit='-'
+        elif var == 'height':
+            unit='m'
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'Total':{'dtype': 'float32'},
-                                             'BNE':{'dtype': 'float32'},
-                                             'BINE':{'dtype': 'float32'},
-                                             'BNS':{'dtype': 'float32'},
-                                             'TeNE':{'dtype': 'float32'},
-                                             'TeBS':{'dtype': 'float32'},
-                                             'IBS':{'dtype': 'float32'},
-                                             'TeBE':{'dtype': 'float32'},
-                                             'TrBE':{'dtype': 'float32'},
-                                             'TrIBE':{'dtype': 'float32'},
-                                             'TrBR':{'dtype': 'float32'},
-                                             'C3G':{'dtype': 'float32'},
-                                             'C4G':{'dtype': 'float32'}})
+        for PFT_short, PFT_long in zip(PFT_shortnames, PFT_longnames):
+            ds_fill[PFT_short].attrs={'units':unit,
+                                      'long_name':PFT_long}
+            dim.append(PFT_short)
+            dim_dtype.append('float32')
+
+        if var in ('aaet', 'agpp', 'anpp', 'clitter', 'cmass', 'cton_leaf', 'dens',
+                   'fpc', 'lai', 'nlitter', 'nmass', 'nuptake', 'vmaxnlim'):
+            ds_fill['Total'].attrs={'units':unit,
+                                           'long_name':'Total'}
+            dim.append('Total')
+            dim_dtype.append('float32')
+        else:
+            pass
 
     elif var == 'cflux':
-        ds_fill['Veg'].attrs={'units':'kgC/m2/year',
-                              'long_name':'Vegetation NPP'}
-        ds_fill['Repr'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Respired litter derived from '
-                               'plant allocation to reproduction'}
-        ds_fill['Soil'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Soil heterotrophic respiration'}
-        ds_fill['Fire'].attrs={'units':'kgC/m2/year',
-                               'long_name':'Wildfire emissions'}
-        ds_fill['Est'].attrs={'units':'kgC/m2/year',
-                              'long_name':'Biomass of plants establishing in '
-                              'the current year'}
-        ds_fill['NEE'].attrs={'units':'kgC/m2/year', 'long_name':'Net C flux '
-                              '(sum of other fluxes'}
+        for cflux_short, cflux_long in zip(cflux_shortnames, cflux_longnames):
+            ds_fill[cflux_short].attrs={'units':'kgC/m2/year',
+                                        'long_name':cflux_long}
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'Veg':{'dtype': 'float32'},
-                                             'Repr':{'dtype': 'float32'},
-                                             'Soil':{'dtype': 'float32'},
-                                             'Fire':{'dtype': 'float32'},
-                                             'Est':{'dtype': 'float32'},
-                                             'NEE':{'dtype': 'float32'}})
+            dim.append(cflux_short)
+            dim_dtype.append('float32')
 
     elif var == 'cpool':
-        ds_fill['VegC'].attrs={'units':'kgC/m2',
-                               'long_name':'Vegetation carbon pool'}
-        ds_fill['LitterC'].attrs={'units':'kgC/m2',
-                                  'long_name':'Litter carbon pool'}
-        ds_fill['SoilC'].attrs={'units':'kgC/m2',
-                                'long_name':'Soil carbon pool'}
-        ds_fill['Total'].attrs={'units':'kgC/m2',
-                                'long_name':'Total carbon pool'}
+        for cpool_short, cpool_long in zip(cpool_shortnames, cpool_longnames):
+            ds_fill[cpool_short].attrs={'units':'kgC/m2',
+                                        'long_name':'cpool_long'}
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'VegC':{'dtype': 'float32'},
-                                             'LitterC':{'dtype': 'float32'},
-                                             'SoilC':{'dtype': 'float32'},
-                                             'Total':{'dtype': 'float32'}})
+            dim.append(cpool_short)
+            dim_dtype.append('float32')
+
+    elif var == 'firert':
+        ds_fill['FireRT'].attrs={'units':'yr',
+                                 'long_name':'Fire return time'}
+
+        dim.append('FireRT')
+        dim_dtype.append('float32')
 
     elif var == 'doc':
         ds_fill['Total'].attrs={'units':'kgC/m2r',
                                 'long_name':'Total dissolved organic carbon'}
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'Total':{'dtype': 'float32'}})
+        dim.append('Total')
+        dim_dtype.append('float32')
 
     elif var == 'nflux':
-        ds_fill['dep'].attrs={'units':'kgN/ha',
-                              'long_name':'Deposition'}
-        ds_fill['fix'].attrs={'units':'kgN/ha',
-                              'long_name':'Fixation'}
-        ds_fill['fert'].attrs={'units':'kgN/ha',
-                               'long_name':'fertilization'}
-        ds_fill['flux'].attrs={'units':'kgN/ha',
-                               'long_name':'Soil emission'}
-        ds_fill['leach'].attrs={'units':'kgN/ha',
-                                'long_name':'leaching'}
-        ds_fill['NEE'].attrs={'units':'kgN/ha',
-                              'long_name':'Net N flux (sum of other fluxes)'}
+        for nflux_short, nflux_long in zip(nflux_shortnames, nflux_longnames):
+            ds_fill[nflux_short].attrs={'units':'kgN/ha/year',
+                                        'long_name':nflux_long}
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'dep':{'dtype': 'float32'},
-                                             'fix':{'dtype': 'float32'},
-                                             'fert':{'dtype': 'float32'},
-                                             'flux':{'dtype': 'float32'},
-                                             'leach':{'dtype': 'float32'},
-                                             'NEE':{'dtype': 'float32'}})
-
+            dim.append(nflux_short)
+            dim_dtype.append('float32')
 
     elif var == 'ngases':
-        ds_fill['NH3'].attrs={'units':'kgN/ha/year',
-                              'long_name':'NH3 flux to atmosphere from fire'}
-        ds_fill['NOx'].attrs={'units':'kgN/ha/year',
-                              'long_name':'NOx flux to atmosphere from fire'}
-        ds_fill['N2O'].attrs={'units':'kgN/ha/year',
-                              'long_name':'N2O flux to atmosphere from fire'}
-        ds_fill['N2'].attrs={'units':'kgN/ha',
-                             'long_name':'N2O flux to atmosphere from fire'}
-        ds_fill['NSoil'].attrs={'units':'kgN/ha', 'long_name':'??'}
-        ds_fill['Total'].attrs={'units':'kgN/ha', 'long_name':'Total'}
+        for ngases_short, ngases_long in zip(ngases_shortnames, ngases_longnames):
+            ds_fill[ngases_short].attrs={'units':'kgN/ha/year',
+                                         'long_name':ngases_long}
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'NH3':{'dtype': 'float32'},
-                                             'NOx':{'dtype': 'float32'},
-                                             'N2O':{'dtype': 'float32'},
-                                             'N2':{'dtype': 'float32'},
-                                             'NSoil':{'dtype': 'float32'},
-                                             'Total':{'dtype': 'float32'}})
+            dim.append(ngases_short)
+            dim_dtype.append('float32')
 
     elif var == 'npool':
-        ds_fill['VegN'].attrs={'units':'kgN/m2',
-                               'long_name':'Vegetation nitrogen pool'}
-        ds_fill['LitterN'].attrs={'units':'kgN/m2',
-                                  'long_name':'Litter nitrogen pool'}
-        ds_fill['SoilN'].attrs={'units':'kgN/m2',
-                                'long_name':'Soil nitrogen pool'}
-        ds_fill['Total'].attrs={'units':'kgN/m2',
-                                'long_name':'Total nitrogen pool'}
-
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'VegN':{'dtype': 'float32'},
-                                             'LitterN':{'dtype': 'float32'},
-                                             'SoilN':{'dtype': 'float32'},
-                                             'Total':{'dtype': 'float32'}})
+        for npool_short, npool_long in zip(npool_shortnames, npool_longnames):
+            ds_fill[npool_short].attrs={'units':'kgN/m2',
+                                        'long_name':npool_long}
+            dim.append(npool_short)
+            dim_dtype.append('float32')
 
     elif var == 'nsources':
-        ds_fill['dep'].attrs={'units':'gN/ha', 'long_name':'Deposition'}
-        ds_fill['fix'].attrs={'units':'gN/ha', 'long_name':'Fixation'}
-        ds_fill['fert'].attrs={'units':'gN/ha', 'long_name':'fertilization'}
-        ds_fill['input'].attrs={'units':'gN/ha', 'long_name':'??'}
-        ds_fill['min'].attrs={'units':'gN/ha', 'long_name':'??'}
-        ds_fill['imm'].attrs={'units':'gN/ha',
-                              'long_name':'Nitrogen immobilisation'}
-        ds_fill['netmin'].attrs={'units':'gN/ha', 'long_name':'??'}
-        ds_fill['Total'].attrs={'units':'gN/ha', 'long_name':'Total'}
+        for nsources_short, nsources_long in zip(nsources_shortnames,
+                                                 nsources_longnames):
+            ds_fill[nsources_short].attrs={'units':'gN/ha',
+                                           'long_name':nsources_long}
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'dep':{'dtype': 'float32'},
-                                             'fix':{'dtype': 'float32'},
-                                             'fert':{'dtype': 'float32'},
-                                             'input':{'dtype': 'float32'},
-                                             'min':{'dtype': 'float32'},
-                                             'imm':{'dtype': 'float32'},
-                                             'netmin':{'dtype': 'float32'},
-                                             'Total':{'dtype': 'float32'}})
+            dim.append(nsources_short)
+            dim_dtype.append('float32')
 
     elif var == 'tot_runoff':
-        ds_fill['Surf'].attrs={'units':'mm/year',  'long_name':'Surface runoff'}
-        ds_fill['Drain'].attrs={'units':'mm/year', 'long_name':'??'}
-        ds_fill['Base'].attrs={'units':'mm/year', 'long_name':'??'}
-        ds_fill['Total'].attrs={'units':'mm/year', 'long_name':'??'}
+        for tot_runoff_short, tot_runoff_long in zip(tot_runoff_shortnames,
+                                                     tot_runoff_longnames):
+            ds_fill[tot_runoff_short].attrs={'units':'mm/year',
+                                           'long_name':tot_runoff_long}
 
-        # save to netCDF
-        ds_fill.to_netcdf(fileOUT, encoding={'Time':{'dtype': 'double'},
-                                             'Lat':{'dtype': 'double'},
-                                             'Lon':{'dtype': 'double'},
-                                             'Surf':{'dtype': 'float32'},
-                                             'Drain':{'dtype': 'float32'},
-                                             'Base':{'dtype': 'float32'},
-                                             'Total':{'dtype': 'float32'}})
+            dim.append(tot_runoff_short)
+            dim_dtype.append('float32')
     else:
         pass
+
+    dtype_fill = ['dtype']*len(dim)
+    encoding_dict = {a: {b: c} for a, b, c in zip(dim, dtype_fill, dim_dtype)}
+
+    # save to netCDF
+    ds_fill.to_netcdf(fileOUT, encoding=encoding_dict)
 
 ### Control CRUNCEP
 convert_ascii_netcdf('global_CRUNCEP/', 'agpp', 'annual',
@@ -314,103 +213,3 @@ convert_ascii_netcdf('global_CRUNCEP_no_fire_no_dist_only_CP_anomaly/', 'cpool',
                      'annual',
                      'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
                      '(anomaly replacement)', 'no_dist')
-
-### EP only (anomaly) CRUNCEP without disturbance
-convert_ascii_netcdf('global_CRUNCEP_no_fire_no_dist_only_EP_anomaly/', 'agpp',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_no_fire_no_dist_only_EP_anomaly/', 'cflux',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_no_fire_no_dist_only_EP_anomaly/', 'cpool',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-
-### CP only (anomaly) CRUNCEP
-convert_ascii_netcdf('global_CRUNCEP_only_CP_anomaly/', 'agpp',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_CP_anomaly/', 'cflux',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_CP_anomaly/', 'cpool',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-
-### CP only (nearest year) CRUNCEP
-convert_ascii_netcdf('global_CRUNCEP_only_CP_nearest_year/', 'agpp',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
-                     '(nearest year replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_CP_nearest_year/', 'cflux',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
-                     '(nearest year replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_CP_nearest_year/', 'cpool',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only CP El Nino events '
-                     '(nearest year replacement)', 'no_dist')
-
-### EP only (anomaly) CRUNCEP
-convert_ascii_netcdf('global_CRUNCEP_only_EP_anomaly/', 'agpp',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_EP_anomaly/', 'cflux',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_EP_anomaly/', 'cpool',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(anomaly replacement)', 'no_dist')
-
-### EP only (nearest year) CRUNCEP
-convert_ascii_netcdf('global_CRUNCEP_only_EP_nearest_year/', 'agpp',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(nearest year replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_EP_nearest_year/', 'cflux',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(nearest year replacement)', 'no_dist')
-convert_ascii_netcdf('global_CRUNCEP_only_EP_nearest_year/', 'cpool',
-                     'annual',
-                     'LPJ-GUESS output CRUNCEP V7, only EP El Nino events '
-                     '(nearest year replacement)', 'no_dist')
-
-### Control GSWP3
-convert_ascii_netcdf('global_GSWP3_noleap/', 'agpp', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017', '')
-convert_ascii_netcdf('global_GSWP3_noleap/', 'cflux', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017', '')
-convert_ascii_netcdf('global_GSWP3_noleap/', 'cpool', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017', '')
-
-### CP only (anomaly) GSWP3
-convert_ascii_netcdf('global_GSWP3_noleap_only_CP_anomaly/', 'agpp', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017, only CP El Nino events '
-                     '(anomaly replacement)', '')
-convert_ascii_netcdf('global_GSWP3_noleap_only_CP_anomaly/', 'cflux', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017, only CP El Nino events '
-                     '(anomaly replacement)', '')
-convert_ascii_netcdf('global_GSWP3_noleap_only_CP_anomaly/', 'cpool', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017, only CP El Nino events '
-                     '(anomaly replacement)', '')
-
-### EP only (anomaly) GSWP3
-convert_ascii_netcdf('global_GSWP3_noleap_only_EP_anomaly/', 'agpp', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017, only EP El Nino events '
-                     '(anomaly replacement)', '')
-convert_ascii_netcdf('global_GSWP3_noleap_only_EP_anomaly/', 'cflux', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017, only EP El Nino events '
-                     '(anomaly replacement)', '')
-convert_ascii_netcdf('global_GSWP3_noleap_only_EP_anomaly/', 'cpool', 'annual',
-                     'LPJ-GUESS output GSWP3 V2017, only EP El Nino events '
-                     '(anomaly replacement)', '')
