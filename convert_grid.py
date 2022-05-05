@@ -7,8 +7,8 @@ with open('gridlist_global_test.txt') as f:
          a,b=line.split('\t')
         
          # get two values as string
-         c=(float(a)-179.75)/0.5
-         d=(float(b)-89.75)/0.5
+         c=(float(a)-(-179.75))/0.5
+         d=(float(b)-(-89.75))/0.5
          print(a)
             
          # calculate the other two values
