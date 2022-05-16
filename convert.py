@@ -3,8 +3,8 @@ from write_netcdf import (
     )
 
 '''
-convert_ascii_netcdf_monthly(var, experiment)
-convert_ascii_netcdf_annual(var, experiment)
+convert_ascii_netcdf_monthly(var, PFT)
+convert_ascii_netcdf_annual(var)
 '''
 
 ### Convert annual GPP 
