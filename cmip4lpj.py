@@ -35,7 +35,9 @@ def cmip4lpj(var_cmip,var_lpj,sn_lpj):
 
     ### Adjust unit for some variables
     if var_lpj == 'rhum':
+        ### needs to be 0-1
         ds[var_lpj] = ds[var_lpj]/100
+        ### need to change unit from % to 1
         ds[var_lpj].attrs['units'] = '1'
 
     ### Remove bounds (LPJ doesn't need them)
