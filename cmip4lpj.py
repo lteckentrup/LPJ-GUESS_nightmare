@@ -34,6 +34,11 @@ def cmip4lpj(var_cmip,var_lpj,sn_lpj):
     ds = ds.drop_vars('time_bnds')
     ds = ds.drop_vars('lat_bnds')
     ds = ds.drop_vars('lon_bnds')
+    
+    ### Drop height variable in tas, tasmax, tasmin
+    if var_lpj in ('tas','tasmax','tasmin'):
+        ds = ds.drop_vars('height')
+
     ds = ds.transpose('lat','lon','time')
 
     ### insert filename of LPJ data
