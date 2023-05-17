@@ -1,5 +1,12 @@
 import xarray as xr
 import xesmf 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--var_cmip', type=str, required=True)
+parser.add_argument('--var_lpj', type=str, required=True)
+parser.add_argument('--sn_lpj', type=str, required=True)
+args = parser.parse_args()
 
 def cmip4lpj(var_cmip,var_lpj,sn_lpj):
     ### insert filename of raw data
@@ -37,10 +44,15 @@ def cmip4lpj(var_cmip,var_lpj,sn_lpj):
                           'lon':{'dtype': 'double'},
                           var_lpj:{'dtype': 'float32'}})
 
-cmip4lpj('tas','temp','air_temperature')
-cmip4lpj('pr','prec','precipitation_flux')
-cmip4lpj('rsds','insol','surface_downwelling_shortwave_flux')
-cmip4lpj('hurs','rhum','relative_humidity')
-cmip4lpj('tasmax','tmax','air_temperature')
-cmip4lpj('tasmin','tmin','air_temperature')
-cmip4lpj('sfcWind','wind','wind_speed')
+cmip4lpj(args.var_cmip,args.var_lpj,args.sn_lpj)
+
+'''
+From command line you can then run
+python cmip4lpj.py --var_cmip 'tas' --var_lpj 'temp' --sn_lpj 'air_temperature'
+python cmip4lpj.py --var_cmip 'pr' --var_lpj 'prec' --sn_lpj 'precipitation_flux'
+python cmip4lpj.py --var_cmip 'rsds','insol' --sn_lpj 'surface_downwelling_shortwave_flux'
+python cmip4lpj.py --var_cmip 'hurs' --var_lpj 'rhum' --sn_lpj 'relative_humidity'
+python cmip4lpj.py --var_cmip 'tasmax' --var_lpj 'tmax' --sn_lpj 'air_temperature'
+python cmip4lpj.py --var_cmip 'tasmin' --var_lpj 'tmin' --sn_lpj 'air_temperature'
+python cmip4lpj.py --var_cmip 'sfcWind' --var_lpj 'wind' --sn_lpj 'wind_speed'
+'''
