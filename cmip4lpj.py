@@ -3,8 +3,15 @@ import xesmf
 
 def cmip4lpj(var_cmip,var_lpj,sn_lpj):
     ### insert filename of raw data
+    ### Can be single file:
     fname_IN = ''
     ds = xr.open_dataset(fname_IN)
+
+    ### or you can also read in multiple files
+    pathwayIN='' ### Insert directory where raw data for GCM are located
+    ds = xr.open_mfdataset(pathwayIN+'*nc')
+    
+    ## Rename variable
     ds = ds.rename({var_cmip:var_lpj})
     ds[var_lpj].attrs['standard_name'] = sn_lpj
     
@@ -25,10 +32,10 @@ def cmip4lpj(var_cmip,var_lpj,sn_lpj):
     ### insert filename of LPJ data
     fname_OUT = ''
     ds.to_netcdf(fname_OUT,
-                 encoding={'time':{'dtype': 'double'},
-                           'lat':{'dtype': 'double'},
-                           'lon':{'dtype': 'double'},
-                           var_lpj:{'dtype': 'float32'}})
+                encoding={'time':{'dtype': 'double'},
+                          'lat':{'dtype': 'double'},
+                          'lon':{'dtype': 'double'},
+                          var_lpj:{'dtype': 'float32'}})
 
 cmip4lpj('tas','temp','air_temperature')
 cmip4lpj('pr','prec','precipitation_flux')
