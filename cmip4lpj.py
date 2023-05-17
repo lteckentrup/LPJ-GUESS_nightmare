@@ -18,6 +18,14 @@ def cmip4lpj(var_cmip,var_lpj,sn_lpj):
     pathwayIN='' ### Insert directory where raw data for GCM are located
     ds = xr.open_mfdataset(pathwayIN+'*nc')
     
+    '''
+    You can select timeslices and a region with this
+    
+    ds = ds.sel(time=slice('2015','2100'),
+                lat=slice(10,30),
+                lon=slice(110,150))
+    '''
+    
     ## Rename variable
     ds = ds.rename({var_cmip:var_lpj})
     ds[var_lpj].attrs['standard_name'] = sn_lpj
